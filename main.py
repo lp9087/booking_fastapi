@@ -1,30 +1,50 @@
-from fastapi import FastAPI, Depends
+from typing import List
+
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from starlette import status
 
 import crud
-import models
-import tables_router
-from core.database import engine, SessionLocal
-from schemas import Table
-
-models.Base.metadata.create_all(bind=engine)
+from core import services
+from schemas import Table, UpdateTable
 
 app = FastAPI()
-# Dependency
+
+services.create_database()
 
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+@app.post("/", tags=['Tables'], response_model=Table, status_code=status.HTTP_201_CREATED)
+def create_table(table: Table, db: Session = Depends(services.get_db)):
+    return crud.create_table(table=table, db=db)
 
 
-app.include_router(tables_router.router)
+@app.get("/", tags=['Tables'], response_model=List[Table])
+def get_tables(
+        skip: int = 0,
+        limit: int = 10,
+        db: Session = Depends(services.get_db)):
+    return crud.get_tables(db=db, skip=skip, limit=limit)
 
 
-@app.get("/", response_model=Table)
-def tables(number: int, seats: int, db: Session = Depends(get_db)):
-    tables = crud.get_table(db, number=number, seats=seats)
-    return tables
+@app.get("/{table_num}", tags=['Tables'], response_model=Table)
+def get_table(table_num: int, db: Session = Depends(services.get_db)):
+    db_table = crud.get_table(table_num=table_num, db=db)
+    if not db_table:
+        raise HTTPException(status_code=404, detail="Table not found")
+    return db_table
+
+
+@app.put("/{table_num}", tags=['Tables'], response_model=Table)
+def update_table(table_num: int, table: UpdateTable,  db: Session = Depends(services.get_db)):
+    table = crud.update_table(db=db, table_num=table_num, table=table)
+    if not table:
+        raise HTTPException(status_code=404, detail="Table not found")
+    return crud.update_table(db=db, table_num=table_num, table=table)
+
+
+@app.delete("/{table_num}", tags=['Tables'], status_code=status.HTTP_205_RESET_CONTENT)
+def delete_table(table_num: int, db: Session = Depends(services.get_db)):
+    table = crud.delete_table(table_num=table_num, db=db)
+    if not table:
+        raise HTTPException(status_code=404, detail="Table not found")
+    return {"message": f"successfully deleted table {table_num}"}
