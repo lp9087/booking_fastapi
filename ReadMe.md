@@ -1,3 +1,4 @@
 Для миграции через Alembic:
-1.```alembic revision --autogenerate -m "First"```
-2. ```alembic upgrade head```
+1. ```alembic init migrations```
+2. ```alembic revision --autogenerate -m "First"```
+3. ```alembic upgrade head```
