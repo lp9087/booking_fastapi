@@ -8,9 +8,9 @@ from alembic import context
 
 sys.path = ['', '..']+sys.path[1:]
 
-
 from core.database import DATABASE_URL
 from core.base import Base
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -65,7 +65,6 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-
     configuration = config.get_section(config.config_ini_section)
     configuration['sqlalchemy.url'] = DATABASE_URL
     connectable = engine_from_config(

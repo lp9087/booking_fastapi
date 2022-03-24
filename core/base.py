@@ -1,2 +1,2 @@
-from .database import Base
-from models import Tables
+from core.database import Base
+from models import Tables, Queue, Booking

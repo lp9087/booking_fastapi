@@ -1,3 +1,4 @@
+alembic==1.7.7
 anyio==3.5.0
 asgiref==3.5.0
 click==8.0.4
@@ -6,6 +7,10 @@ fastapi==0.75.0
 greenlet==1.1.2
 h11==0.13.0
 idna==3.3
+Mako==1.2.0
+MarkupSafe==2.1.1
+phonenumbers==8.12.45
+psycopg2==2.9.3
 pydantic==1.9.0
 sniffio==1.2.0
 SQLAlchemy==1.4.32
