@@ -7,19 +7,19 @@ from starlette import status
 
 import crud
 from core import services
-from schemas import Table, UpdateTable, Queue, Booking
+from schemas import Table, UpdateTable, Queue, CreateBooking, GetBooking
 
 app = FastAPI()
 
 services.create_database()
 
 
-@app.post("/", tags=['Tables'], response_model=Table, status_code=status.HTTP_201_CREATED)
+@app.post("/tables", tags=['Tables'], response_model=Table, status_code=status.HTTP_201_CREATED)
 def create_table(table: Table, db: Session = Depends(services.get_db)):
     return crud.create_table(table=table, db=db)
 
 
-@app.get("/", tags=['Tables'], response_model=List[Table])
+@app.get("/tables", tags=['Tables'], response_model=List[Table])
 def get_tables(
         skip: int = 0,
         limit: int = 10,
@@ -27,7 +27,7 @@ def get_tables(
     return crud.get_tables(db=db, skip=skip, limit=limit)
 
 
-@app.get("/{table_num}", tags=['Tables'], response_model=Table)
+@app.get("/tables/{table_num}", tags=['Tables'], response_model=Table)
 def get_table(table_num: int, db: Session = Depends(services.get_db)):
     db_table = crud.get_table(table_num=table_num, db=db)
     if not db_table:
@@ -35,7 +35,7 @@ def get_table(table_num: int, db: Session = Depends(services.get_db)):
     return db_table
 
 
-@app.put("/{table_num}", tags=['Tables'], response_model=Table)
+@app.put("/tables/{table_num}", tags=['Tables'], response_model=Table)
 def update_table(table_num: int, table: UpdateTable,  db: Session = Depends(services.get_db)):
     table = crud.update_table(db=db, table_num=table_num, table=table)
     if not table:
@@ -43,7 +43,7 @@ def update_table(table_num: int, table: UpdateTable,  db: Session = Depends(serv
     return crud.update_table(db=db, table_num=table_num, table=table)
 
 
-@app.delete("/{table_num}", tags=['Tables'], status_code=status.HTTP_205_RESET_CONTENT)
+@app.delete("/tables/{table_num}", tags=['Tables'], status_code=status.HTTP_205_RESET_CONTENT)
 def delete_table(table_num: int, db: Session = Depends(services.get_db)):
     table = crud.delete_table(table_num=table_num, db=db)
     if not table:
@@ -61,9 +61,14 @@ def get_queues(db: Session = Depends(services.get_db)):
     return crud.get_queues(db=db)
 
 
-@app.post("/booking", tags=['Booking'], response_model=Booking, status_code=status.HTTP_201_CREATED)
-def create_booking(booking: Booking, db: Session = Depends(services.get_db)):
+@app.post("/booking", tags=['Booking'], response_model=CreateBooking, status_code=status.HTTP_201_CREATED)
+def create_booking(booking: CreateBooking, db: Session = Depends(services.get_db)):
     return crud.create_booking(booking=booking, db=db)
+
+
+@app.get("/booking", tags=['Booking'], response_model=List[GetBooking])
+def get_booking(db: Session = Depends(services.get_db)):
+    return crud.get_booking(db=db)
 
 
 if __name__ == "__main__":

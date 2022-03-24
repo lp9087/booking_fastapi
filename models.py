@@ -33,6 +33,9 @@ class Booking(Base):
     table = relationship("Tables", back_populates="booking")
     quest_id = Column(Integer, ForeignKey('queue.id'))
     quest = relationship("Queue", back_populates="booking")
+    beginning_time = Column(DateTime)
+    ending_time = Column(DateTime)
+
 
 
 

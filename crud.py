@@ -57,9 +57,13 @@ def get_queues(db: Session):
     return db.query(models.Queue).all()
 
 
-def create_booking(db: Session, booking: schemas.Booking):
+def create_booking(db: Session, booking: schemas.CreateBooking):
     db_booking = models.Booking(table_num=booking.table_num, quest_id=booking.quest_id)
     db.add(db_booking)
     db.commit()
     db.refresh(db_booking)
     return db_booking
+
+
+def get_booking(db: Session):
+    return db.query(models.Booking).all()

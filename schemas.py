@@ -31,9 +31,21 @@ class Queue(BaseModel):
         orm_mode = True
 
 
-class Booking(BaseModel):
+class CreateBooking(BaseModel):
     table_num: int
     quest_id: int
+    beginning_time = datetime
+    ending_time = datetime
+
+    class Config:
+        orm_mode = True
+
+
+class GetBooking(BaseModel):
+    table_num: int
+    quest_id: int
+    beginning_time = datetime
+    ending_time = datetime
 
     class Config:
         orm_mode = True
